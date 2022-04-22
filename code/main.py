@@ -14,6 +14,7 @@ transform = transforms.Compose([transforms.Resize(224),
                                 transforms.ToTensor(),
                                 ])
 
+# Adding a random comment just to see if GitHub issues and pull requests work properly.
 # Setting the hyperparameters
 num_epochs = 5
 batch_size = 16
