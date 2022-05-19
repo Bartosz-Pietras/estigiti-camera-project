@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import numpy as np
 import matplotlib.pyplot as plt
-from torchvision import datasets, transforms, models
+from torchvision import datasets, transforms
 from torch.utils.data.sampler import SubsetRandomSampler
 
 from model import Model
@@ -17,9 +17,9 @@ transform = transforms.Compose([transforms.Resize((298, 224)),
 
 # Adding a random comment just to see if GitHub issues and pull requests work properly.
 # Setting the hyperparameters
-num_epochs = 20
-batch_size = 1
-learning_rate = 0.001
+num_epochs = 100
+batch_size = 5
+learning_rate = 0.005
 
 # Loading and splitting the data into train/test set
 train_data = datasets.ImageFolder('../dataset/', transform=transform)
@@ -55,7 +55,6 @@ for epoch in range(num_epochs):
         # origin shape: [4, 3, 32, 32] = 4, 3, 1024
         # input_layer: 3 input channels, 6 output channels, 5 kernel size
         images, labels = images.to(device), labels.to(device)
-
         # Forward pass
         outputs = model(images)
         loss = criterion(outputs, labels)
@@ -90,7 +89,8 @@ with torch.no_grad():
         equals = top_class == labels.view(*top_class.shape)
         accuracy += torch.mean(equals.type(torch.FloatTensor)).item()
 
-    test_losses.append(test_loss / len(test_loader))
+        test_losses.append(test_loss / len(test_loader))
+    print(f"Test losses: {test_losses}")
     print(f"Test loss: {test_loss / len(test_loader):.3f}\n"
           f"Test accuracy: {accuracy / len(test_loader):.3f}")
 
