@@ -12,37 +12,39 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(device)
 
 transform = transforms.Compose([transforms.Resize((298, 224)),
+                                transforms.RandomRotation(degrees=(-90, -90)),
                                 transforms.ToTensor(),
                                 ])
 
 # Adding a random comment just to see if GitHub issues and pull requests work properly.
 # Setting the hyperparameters
-num_epochs = 100
-batch_size = 5
-learning_rate = 0.005
+NUM_EPOCHS = 5
+BATCH_SIZE = 5
+LEARNING_RATE = 0.005
+TEST_SIZE = 0.2
+
 
 # Loading and splitting the data into train/test set
 train_data = datasets.ImageFolder('../dataset/', transform=transform)
 test_data = datasets.ImageFolder('../dataset/', transform=transform)
 
-test_size = 0.2
 num_images = len(train_data)
 indices = list(range(num_images))
-split = int(np.floor(test_size * num_images))
+split = int(np.floor(TEST_SIZE * num_images))
 np.random.shuffle(indices)
 
 train_idx, test_idx = indices[split:], indices[:split]
 train_sampler = SubsetRandomSampler(train_idx)
 test_sampler = SubsetRandomSampler(test_idx)
 train_loader = torch.utils.data.DataLoader(train_data,
-                                           sampler=train_sampler, batch_size=batch_size)
+                                           sampler=train_sampler, batch_size=BATCH_SIZE)
 test_loader = torch.utils.data.DataLoader(test_data,
-                                          sampler=test_sampler, batch_size=batch_size)
+                                          sampler=test_sampler, batch_size=BATCH_SIZE)
 
 model = Model().to(device)
 
 criterion = nn.CrossEntropyLoss()
-optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
+optimizer = torch.optim.SGD(model.parameters(), lr=LEARNING_RATE)
 
 # Training loop
 n_total_steps = len(train_loader)
@@ -50,7 +52,7 @@ accuracy = 0
 running_loss, test_loss = 0, 0
 train_losses, test_losses = [], []
 
-for epoch in range(num_epochs):
+for epoch in range(NUM_EPOCHS):
     for i, (images, labels) in enumerate(train_loader):
         # origin shape: [4, 3, 32, 32] = 4, 3, 1024
         # input_layer: 3 input channels, 6 output channels, 5 kernel size
@@ -66,14 +68,14 @@ for epoch in range(num_epochs):
         running_loss += loss.item()
 
         if (i + 1) % 10 == 0:
-            print(f'Epoch [{epoch + 1}/{num_epochs}], Step [{i + 1}/{n_total_steps}], Loss: {loss.item():.3f}')
+            print(f'Epoch [{epoch + 1}/{NUM_EPOCHS}], Step [{i + 1}/{n_total_steps}], Loss: {loss.item():.3f}')
     train_losses.append(running_loss / len(train_loader))
     running_loss = 0
 
 print('Finished the training')
 
 # Save the model
-PATH = '../model/cnn.pth'
+PATH = '../model/leaves_recogniser.pth'
 torch.save(model.state_dict(), PATH)
 
 # Evaluate the validation loss and accuracy
