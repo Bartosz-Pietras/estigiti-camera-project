@@ -18,7 +18,7 @@ transform = transforms.Compose([transforms.Resize((298, 224)),
 
 # Adding a random comment just to see if GitHub issues and pull requests work properly.
 # Setting the hyperparameters
-NUM_EPOCHS = 5
+NUM_EPOCHS = 35
 BATCH_SIZE = 5
 LEARNING_RATE = 0.005
 TEST_SIZE = 0.2
@@ -75,7 +75,7 @@ for epoch in range(NUM_EPOCHS):
 print('Finished the training')
 
 # Save the model
-PATH = '../model/leaves_recogniser.pth'
+PATH = '../model/model.pth'
 torch.save(model.state_dict(), PATH)
 
 # Evaluate the validation loss and accuracy

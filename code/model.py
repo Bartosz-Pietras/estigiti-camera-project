@@ -12,7 +12,7 @@ class Model(nn.Module):
         self.conv2 = nn.Conv2d(6, 16, 5)
         self.fc1 = nn.Linear(60208, 120)
         self.fc2 = nn.Linear(120, 84)
-        self.fc3 = nn.Linear(84, 2)
+        self.fc3 = nn.Linear(84, 5)
 
     def forward(self, x):
         x = self.pool(functional.relu(self.conv1(x)))  # -> n, 6, 14, 14
