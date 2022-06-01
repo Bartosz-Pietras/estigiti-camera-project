@@ -19,7 +19,7 @@ def extract_green_from_img(img, dir_path, old_path, new_path):
 
 
 def convert_dataset_to_green():
-    for root, dir, filenames in os.walk('../dataset_5_stages'):
+    for root, dir, filenames in os.walk("../dataset_5_stages"):
         new_dir_path = f"../dataset_5_stages_green/{root[20:]}"
         for filename in filenames:
             old_image_path = f"{root}/{filename}"
