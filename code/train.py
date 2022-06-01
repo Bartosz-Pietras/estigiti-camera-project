@@ -11,12 +11,10 @@ from model import Model
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(device)
 
-transform = transforms.Compose(
-    [
-        transforms.Resize((298, 224)),
-        transforms.ToTensor(),
-    ]
-)
+transform = transforms.Compose([transforms.Resize((298, 224)),
+                                transforms.RandomRotation(degrees=(-90, -90)),
+                                transforms.ToTensor(),
+                                ])
 
 # Setting the hyperparameters
 HYPERPARAMETERS = {
