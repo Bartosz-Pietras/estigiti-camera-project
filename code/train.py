@@ -18,8 +18,8 @@ transform = transforms.Compose([transforms.Resize((298, 224)),
 
 # Setting the hyperparameters
 HYPERPARAMETERS = {
-    "epochs": 15,
-    "batch_size": 10,
+    "epochs": 300,
+    "batch_size": 5,
     "learning_rate": 1e-3,
     "train_size": 0.7,
     "valid_size": 0.2,
