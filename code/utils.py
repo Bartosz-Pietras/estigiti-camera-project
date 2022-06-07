@@ -118,7 +118,7 @@ def onnx_to_tf_weights():
     tensorflow_model_path = "../model/leaves_recogniser.pb"
     tensorflow_weights_path = "../model/leaves_recogniser_weights"
 
-    onnx_model = torch.onnx.load(onnx_model_path)
+    onnx_model = onnx.load(onnx_model_path)
 
     tf_model_save = prepare(onnx_model)
     tf_model_save.export_graph(tensorflow_model_path)
