@@ -4,43 +4,10 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 from sklearn.metrics import confusion_matrix
-
+import onnx
+from onnx_tf.backend import prepare
+from tensorflow.keras.models import load_model
 from model import Model
-
-
-# Function to Convert to ONNX
-def convert_to_ONNX():
-    torch_model_path = "../model/leaves_recogniser.pth"
-    onnx_model_path = "../model/leaves_recogniser.onnx"
-
-    device = select_proper_device()
-
-    model = Model()
-    if torch.cuda.is_available():
-        model.load_state_dict(torch.load(torch_model_path))
-    else:
-        model.load_state_dict(torch.load(torch_model_path, map_location="cpu"))
-
-    # set the model to inference mode
-    model.eval()
-
-    dummy_input = torch.randn(
-        5, 3, 298, 224
-    )  # 5 batches (train.py), 3 channels on image, dimensions of the image
-
-    # Export the model
-    torch.onnx.export(
-        model,  # model being run
-        dummy_input,  # model input (or a tuple for multiple inputs) - na razie dalem None bo nie wiem do konca
-        onnx_model_path,  # where to save the model
-        export_params=True,  # store the trained parameter weights inside the model file
-        opset_version=10,  # the ONNX version to export the model to
-        do_constant_folding=True,  # whether to execute constant folding for optimization
-        input_names=["modelInput"],  # the model's input names
-        output_names=["modelOutput"],  # the model's output names
-    )
-
-    print("\nModel has been converted to ONNX")
 
 
 def evaluate_model(model, test_loader, epochs, train_size, valid_size, train_losses, validation_losses):
@@ -110,9 +77,59 @@ def plot_losses(epochs, train_losses, validation_losses, train_size, valid_size)
     plt.show()
 
 
+# Function to Convert to ONNX
+def convert_to_ONNX():
+    torch_model_path = "../model/leaves_recogniser.pth"
+    onnx_model_path = "../model/leaves_recogniser.onnx"
+
+    device = select_proper_device()
+
+    model = Model()
+    if torch.cuda.is_available():
+        model.load_state_dict(torch.load(torch_model_path))
+    else:
+        model.load_state_dict(torch.load(torch_model_path, map_location="cpu"))
+
+    # set the model to inference mode
+    model.eval()
+
+    dummy_input = torch.randn(
+        5, 3, 298, 224
+    )  # 5 batches (train.py), 3 channels on image, dimensions of the image
+
+    # Export the model
+    torch.onnx.export(
+        model,  # model being run
+        dummy_input,  # model input (or a tuple for multiple inputs) - na razie dalem None bo nie wiem do konca
+        onnx_model_path,  # where to save the model
+        export_params=True,  # store the trained parameter weights inside the model file
+        opset_version=10,  # the ONNX version to export the model to
+        do_constant_folding=True,  # whether to execute constant folding for optimization
+        input_names=["modelInput"],  # the model's input names
+        output_names=["modelOutput"],  # the model's output names
+    )
+
+    print("\nModel has been converted to ONNX")
+
+
+def onnx_to_tf_weights():
+    """Saving the weights instead of a model in tensorflow format, since that's what our model (based on CIFAR) needs."""
+    onnx_model_path = "../model/leaves_recogniser.onnx"
+    tensorflow_model_path = "../model/leaves_recogniser.pb"
+    tensorflow_weights_path = "../model/leaves_recogniser_weights"
+
+    onnx_model = torch.onnx.load(onnx_model_path)
+
+    tf_model_save = prepare(onnx_model)
+    tf_model_save.export_graph(tensorflow_model_path)
+
+    tf_model = load_model(tensorflow_model_path)
+    tf_model.save_weights(tensorflow_weights_path)
+
+
 def select_proper_device():
     return torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 if __name__ == "__main__":
-    convert_to_ONNX()
+    onnx_to_tf_weights()
