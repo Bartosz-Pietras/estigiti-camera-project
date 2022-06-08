@@ -36,7 +36,6 @@ test_count = num_images - train_count - valid_count
 train_dataset, valid_dataset, test_dataset = torch.utils.data.random_split(
     bean_dataset, (train_count, valid_count, test_count)
 )
-
 train_loader = torch.utils.data.DataLoader(
     train_dataset, batch_size=HYPERPARAMETERS["batch_size"], shuffle=True
 )

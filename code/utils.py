@@ -54,9 +54,9 @@ def evaluate_model(model, test_loader, epochs, train_size, valid_size, train_los
 def plot_confusion_matrix(cf_matrix):
     ax = sns.heatmap(cf_matrix, annot=True, cmap='Blues')
 
-    ax.set_title('Seaborn Confusion Matrix with labels\n');
+    ax.set_title('Seaborn Confusion Matrix with labels\n')
     ax.set_xlabel('Predicted stage')
-    ax.set_ylabel('Actual stage\n');
+    ax.set_ylabel('Actual stage\n')
 
     # Ticket labels - List must be in alphabetical order
     ax.xaxis.set_ticklabels(['Stage 1', 'Stage 2', 'Stage 3', 'Stage 4'])
