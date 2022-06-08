@@ -47,17 +47,23 @@ test_loader = torch.utils.data.DataLoader(
     test_dataset, batch_size=HYPERPARAMETERS["batch_size"], shuffle=False
 )
 
+train_size = len(train_loader)
+valid_size = len(valid_loader)
+validation_loss = 0.0
+training_loss = 0.0
+
 model = Model().to(device)
 
 optimizer = torch.optim.SGD(model.parameters(), lr=HYPERPARAMETERS["learning_rate"])
 criterion = nn.CrossEntropyLoss()
 
-validation_loss = 0.0
+
 train_losses, validation_losses = np.array([]), np.array([])
 
 # Training loop
 for epoch in range(HYPERPARAMETERS["epochs"]):
-    training_loss = 0.0
+
+    lowest_validation_loss = 100000
     for i, (images, labels) in enumerate(train_loader):
         # origin shape: [4, 3, 32, 32] = 4, 3, 1024
         # input_layer: 3 input channels, 6 output channels, 5 kernel size
@@ -74,7 +80,7 @@ for epoch in range(HYPERPARAMETERS["epochs"]):
 
         if (i + 1) % 10 == 0:
             print(
-                f'Epoch [{epoch + 1}/{HYPERPARAMETERS["epochs"]}], Step [{i + 1}/{n_total_steps}],',
+                f'Epoch [{epoch + 1}/{HYPERPARAMETERS["epochs"]}], Step [{i + 1}/{len(train_loader)}],',
                 f"Loss: {loss.item():.3f}",
             )
 
@@ -86,19 +92,19 @@ for epoch in range(HYPERPARAMETERS["epochs"]):
         loss = criterion(output, labels)
         validation_loss += loss.item()
 
+    if validation_loss < lowest_validation_loss:
+        # Save the model
+        PATH = "../model/bean_stage_recogniser_01_06_2022.pth"
+        torch.save(model.state_dict(), PATH)
+        lowest_validation_loss = validation_loss
+
     train_losses = np.append(train_losses, training_loss)
     validation_losses = np.append(validation_losses, validation_loss)
 
 print("Finished the training")
 
-# Save the model
-PATH = "../model/bean_stage_recogniser_01_06_2022.pth"
-torch.save(model.state_dict(), PATH)
-
 # Evaluate the validation loss and accuracy
 epochs = np.arange(HYPERPARAMETERS["epochs"]) + 1
-train_size = len(train_loader)
-valid_size = len(valid_loader)
 
 evaluate_model(
     model, test_loader, epochs, train_size, valid_size, train_losses, validation_losses

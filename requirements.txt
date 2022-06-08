@@ -1,6 +1,6 @@
 torch==1.11.0
-numpy==1.22.3
 torchvision==0.12.0
-matplotlib==3.5.1
-Pillow~=9.1.0
+numpy==1.22.4
+matplotlib==3.5.2
+Pillow==9.1.1
 onedrivedownloader~=1.1.3

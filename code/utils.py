@@ -82,8 +82,6 @@ def convert_to_ONNX():
     torch_model_path = "../model/leaves_recogniser.pth"
     onnx_model_path = "../model/leaves_recogniser.onnx"
 
-    device = select_proper_device()
-
     model = Model()
     if torch.cuda.is_available():
         model.load_state_dict(torch.load(torch_model_path))
