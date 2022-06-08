@@ -6,7 +6,7 @@ import numpy as np
 from sklearn.metrics import confusion_matrix
 import onnx
 from onnx_tf.backend import prepare
-from tensorflow.keras.models import load_model
+from keras.models import load_model
 from model import Model
 
 
