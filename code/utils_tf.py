@@ -3,6 +3,7 @@ import os
 import shutil
 from typing import List
 
+import cv2
 import keras
 import matplotlib.pyplot as plt
 import numpy as np
@@ -67,6 +68,25 @@ def get_stages_list(num_stages: int) -> List:
         stages.append(f"stage_{i + 1}")
 
     return stages
+
+from PIL import Image
+import numpy as np
+from skimage import transform
+
+def load(image):
+   np_image = np.array(image).astype('float32')/255
+   np_image = transform.resize(np_image, (298, 224, 3))
+   np_image = np.expand_dims(np_image, axis=0)
+   return np_image
+
+def predict_image(image, model):
+    img = load(image)
+    output = model.predict(img)
+    print(output)
+    max_value = np.amax(output)
+    max_index = np.where(output == max_value)[1][0]
+    return (max_index, max_value)
+
 
 
 def split_dataset(path: str, train_part: float = 0.7, valid_part: float = 0.2) -> None:
@@ -133,3 +153,14 @@ def remove_directories(path: str) -> None:
     shutil.rmtree(f"{path}/train")
     shutil.rmtree(f"{path}/valid")
     shutil.rmtree(f"{path}/test")
+
+if __name__ == "__main__":
+    # image = cv2.imread('../dataset/stage_1/20220517_161258.jpg', 0)
+    # cv2.imshow("image", image)
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
+    model = tf.keras.models.load_model("../model/model_dataset_equal_SGD_lr_1e-05_kernel_size_3")
+    print(model.summary())
+
+    # Saving the Model in H5 Format
+    tf.keras.models.save_model(model, "../model/SGD_lr_1e-05_kernel_size_3.h5")
