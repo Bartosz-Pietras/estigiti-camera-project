@@ -20,10 +20,10 @@ def use_gpu() -> None:
     tf.config.experimental.set_memory_growth(devices[0], True)
 
 
-def plot_confusion_matrix(cf_matrix: np.ndarray, classes: List) -> None:
+def plot_confusion_matrix(cf_matrix: np.ndarray, classes: List, name: str) -> None:
     ax = sns.heatmap(cf_matrix, annot=True, cmap='Blues')
 
-    ax.set_title('Seaborn Confusion Matrix with labels\n')
+    ax.set_title(f'{name}\n')
     ax.set_xlabel('Predicted stage')
     ax.set_ylabel('Actual stage\n')
 

@@ -4,10 +4,8 @@ from onedrivedownloader import download
 
 ROOT_PATH = "../"
 DATASET_PATH = ROOT_PATH + "dataset"
-URL = (
-    r"https://politechnikawroclawska-my.sharepoint.com/:u:/g/personal/253133_student_pwr_edu_pl/ESGXo_wV3LpPpJPF0Ci"
-    r"F3wABodT_-KMQMCLNaFS6PxRsDQ?e=Mosy50"
-)
+URL = r"https://politechnikawroclawska-my.sharepoint.com/:u:/g/pers" \
+      "onal/253133_student_pwr_edu_pl/ESr4b-6X0GVIjWJhRXFRU0ABGFH_4gIRqrpyzQqchuHL1A?e=B1xx6P"
 
 
 def check_dataset():
